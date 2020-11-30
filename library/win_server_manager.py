@@ -27,12 +27,12 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = r'''
 ---
-module: win_windows_admin_center
-short_description: Manipulate the configuration of Windows Admin Center
+module: win_server_manager
+short_description: Manipulate the configuration of Server Manager
 author:
     - Stéphane Bilqué (@sbilque) Informatique CDC
 description:
-    - This Ansible module allows to change the Windows Admin Center configuration.
+    - This Ansible module allows to change the Windows Server Manager configuration.
 options:
     pop_console_at_sm_launch:
         description:
@@ -59,24 +59,24 @@ options:
 
 EXAMPLES = r'''
 ---
-- name: test the win_windows_admin_center module
+- name: test the win_server_manager module
   hosts: all
   gather_facts: false
 
   roles:
-    - win_windows_admin_center
+    - win_server_manager
 
   tasks:
     - name: Disable the message "Try managing servers with Windows Admin Center".
-      win_windows_admin_center:
+      win_server_manager:
         pop_console_at_sm_launch: false
 
     - name: Specifies that the Server Manager application does not open automatically at logon.
-      win_windows_admin_center:
+      win_server_manager:
         open_server_manager_at_logon: false
 
     - name: Specifies that the Initial Configuration Tasks application opens automatically when the end user logs on for the first time.
-      win_windows_admin_center:
+      win_server_manager:
         open_initial_configuration_tasks_at_logon: false
 '''
 

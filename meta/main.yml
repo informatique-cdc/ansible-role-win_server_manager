@@ -1,7 +1,7 @@
 galaxy_info:
-  role_name: win_windows_admin_center
+  role_name: win_server_manager
   author: Stéphane Bilqué
-  description: Manages Windows Admin Center
+  description: Manages Server Manager
   company: Informatique CDC
   license: Apache
 
@@ -16,5 +16,8 @@ galaxy_info:
     - windows
     - admin
     - center
+    - server
+    - manager
+    - console
 
 dependencies: []

@@ -1,5 +1,5 @@
 ---
 
-- name: seup Windows Admin Center
-  win_windows_admin_center:
-    pop_console_at_sm_launch: "{{ wac_pop_console_at_sm_launch }}"
+- name: setup Server Manager
+  win_server_manager:
+    pop_console_at_sm_launch: "{{ wsm_pop_console_at_sm_launch }}"

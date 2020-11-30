@@ -40,7 +40,7 @@ $UserRegistryPath = 'HKCU:\SOFTWARE\Microsoft\ServerManager'
 
 try {
 
-    Describe 'win_windows_admin_center' -Tag 'Set' {
+    Describe 'win_server_manager' -Tag 'Set' {
 
         Context 'Configure Windows Admin Center' {
 
