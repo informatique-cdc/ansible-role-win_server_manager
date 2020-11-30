@@ -12,7 +12,7 @@
         pop_console_at_sm_launch : no
       register: wsm_config
 
-    - name: Test the Windows Admin Center config
+    - name: Test the Server Manager config
       assert:
         that:
           - wsm_config.pop_console_at_sm_launch == false
@@ -22,7 +22,7 @@
         pop_console_at_sm_launch : no
       register: wsm_config
 
-    - name: Test the Windows Admin Center config
+    - name: Test the Server Manager config
       assert:
         that:
           - wsm_config.pop_console_at_sm_launch == true
@@ -33,11 +33,11 @@
       vars:
         wsm_pop_console_at_sm_launch : no
 
-    - name: Get the Windows Admin Center configuration
+    - name: Get the Server Manager configuration
       win_server_manager:
       register: wsm_config
 
-    - name: Test the Windows Admin Center config
+    - name: Test the Server Manager config
       assert:
         that:
           - wsm_config.pop_console_at_sm_launch == false
