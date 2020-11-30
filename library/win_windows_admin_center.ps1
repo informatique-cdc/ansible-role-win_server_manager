@@ -5,6 +5,8 @@
 $spec = @{
     options             = @{
         pop_console_at_sm_launch = @{ type = "bool"; }
+        open_server_manager_at_logon = @{ type = "bool"; }
+        open_initial_configuration_tasks_at_logon = @{ type = "bool"; }
     }
     supports_check_mode = $true
 }
@@ -12,8 +14,11 @@ $spec = @{
 $module = [Ansible.Basic.AnsibleModule]::Create($args, $spec)
 
 $pop_console_at_sm_launch = $module.Params.pop_console_at_sm_launch
+$open_server_manager_at_logon = $module.Params.open_server_manager_at_logon
+$open_initial_configuration_tasks_at_logon = $module.Params.open_initial_configuration_tasks_at_logon
 $check_mode = $module.CheckMode
 $registryKey = 'HKLM:\SOFTWARE\Microsoft\ServerManager'
+$userRegistryKey ='HKCU:\SOFTWARE\Microsoft\ServerManager'
 $diff_before = @{ }
 $diff_after = @{ }
 
@@ -101,27 +106,38 @@ function Get-TargetResource {
 
     return @{
         pop_console_at_sm_launch = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotPopWACConsoleAtSMLaunch' | ConvertTo-Boolean)
+        open_server_manager_at_logon = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotOpenServerManagerAtLogon' | ConvertTo-Boolean)
+        open_initial_configuration_tasks_at_logon = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotOpenInitialConfigurationTasksAtLogon' | ConvertTo-Boolean)
+        checked_unattend_launch_setting = (Get-RegistryPropertyValue -Path $userRegistryKey -Name 'CheckedUnattendLaunchSetting' | ConvertTo-Boolean)
     }
 }
 
-function Set-DoNotPopWACConsoleAtSMLaunch {
+
+function Set-ServerManagerBooleanProperty {
     [cmdletbinding(SupportsShouldProcess)]
     param
     (
         [Parameter(Mandatory = $true)]
+        [string]
+        $Name,
+        [Parameter(Mandatory = $true)]
         [System.Boolean]
-        $Enabled
+        $Enabled,
+        [string]
+        $Path = $registryKey
     )
     try {
         $defaultSetItemPropertyParameters = @{
-            Path        = $registryKey
+            Path        = $Path
             ErrorAction = 'Stop'
         }
         $value = if ($Enabled) { 1 } else { 0 }
-        Set-ItemProperty @defaultSetItemPropertyParameters -Name 'DoNotPopWACConsoleAtSMLaunch' -Value $value
+        if (-not $check_mode) {
+            Set-ItemProperty @defaultSetItemPropertyParameters -Name $Name -Value $value
+        }
     }
     catch {
-        $module.FailJson("An error occurs when changing the DoNotPopWACConsoleAtSMLaunch property: $($_.Exception.Message)", $_)
+        $module.FailJson("An error occurs when changing the $Name property: $($_.Exception.Message)", $_)
     }
 }
 
@@ -130,23 +146,57 @@ function Set-TargetResource {
     (
         [Parameter()]
         [System.Boolean]
-        $pop_console_at_sm_launch
+        $pop_console_at_sm_launch,
+        [Parameter()]
+        [System.Boolean]
+        $open_server_manager_at_logon,
+        [Parameter()]
+        [System.Boolean]
+        $open_initial_configuration_tasks_at_logon
     )
 
     $getTargetResourceResult = Get-TargetResource
+    $module.Result.changed = $false
 
     if ($PSBoundParameters.ContainsKey('pop_console_at_sm_launch')) {
         if ($getTargetResourceResult.pop_console_at_sm_launch -ne $pop_console_at_sm_launch) {
-            if (-not $check_mode) {
-                Set-DoNotPopWACConsoleAtSMLaunch -Enabled (-not ($pop_console_at_sm_launch)) # -WhatIf:$check_mode
-            }
-            $diff_before.pop_console_at_sm_launch = $getTargetResourceResult.pop_console_at_sm_launch
+            Set-ServerManagerBooleanProperty -Name 'DoNotPopWACConsoleAtSMLaunch' -Enabled (-not ($pop_console_at_sm_launch))
             $diff_after.pop_console_at_sm_launch = $pop_console_at_sm_launch
             $module.Result.changed = $true
         }
-        else {
-            $module.Result.changed = $false
+    }
+
+    if ($PSBoundParameters.ContainsKey('open_server_manager_at_logon')) {
+        if ($getTargetResourceResult.open_server_manager_at_logon -ne $open_server_manager_at_logon) {
+            Set-ServerManagerBooleanProperty -Name 'DoNotOpenServerManagerAtLogon' -Enabled (-not ($open_server_manager_at_logon))
+            $diff_after.open_server_manager_at_logon = $open_server_manager_at_logon
+            $module.Result.changed = $true
+            Set-ServerManagerBooleanProperty -Name 'DoNotOpenServerManagerAtLogon' -Enabled (-not ($open_server_manager_at_logon)) -Path $userRegistryKey
         }
+
+        if ($getTargetResourceResult.open_initial_configuration_tasks_at_logon -ne $open_server_manager_at_logon) {
+            Set-ServerManagerBooleanProperty -Name 'DoNotOpenInitialConfigurationTasksAtLogon' -Enabled (-not ($open_server_manager_at_logon))
+            $diff_after.open_initial_configuration_tasks_at_logon = $open_server_manager_at_logon
+            $module.Result.changed = $true
+        }
+
+        if ($getTargetResourceResult.checked_unattend_launch_setting -ne $open_server_manager_at_logon) {
+            Set-ServerManagerBooleanProperty -Name 'CheckedUnattendLaunchSetting' -Enabled $open_server_manager_at_logon -Path $userRegistryKey
+            $diff_after.checked_unattend_launch_setting = $open_server_manager_at_logon
+            $module.Result.changed = $true
+        }
+    }
+
+    if ($PSBoundParameters.ContainsKey('open_initial_configuration_tasks_at_logon')) {
+        if ($getTargetResourceResult.open_initial_configuration_tasks_at_logon -ne $open_initial_configuration_tasks_at_logon) {
+            Set-ServerManagerBooleanProperty -Name 'DoNotOpenInitialConfigurationTasksAtLogon' -Enabled (-not ($open_initial_configuration_tasks_at_logon))
+            $diff_after.open_initial_configuration_tasks_at_logon = $open_initial_configuration_tasks_at_logon
+            $module.Result.changed = $true
+        }
+    }
+
+    $diff_after.Keys | ForEach-Object {
+        $diff_before.$_ = $getTargetResourceResult.$_
     }
 }
 
@@ -155,6 +205,13 @@ $setTargetResourceParameters = @{}
 if ($null -ne $pop_console_at_sm_launch) {
     $setTargetResourceParameters.pop_console_at_sm_launch = $pop_console_at_sm_launch
 }
+if ($null -ne $open_server_manager_at_logon ) {
+    $setTargetResourceParameters.open_server_manager_at_logon  = $open_server_manager_at_logon
+}
+if ($null -ne $open_initial_configuration_tasks_at_logon) {
+    $setTargetResourceParameters.open_initial_configuration_tasks_at_logon = $open_initial_configuration_tasks_at_logon
+}
+
 Set-TargetResource @setTargetResourceParameters
 
 $module.result.Config = Get-TargetResource

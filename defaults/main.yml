@@ -1,2 +1,4 @@
 ---
 wac_pop_console_at_sm_launch: false
+wac_open_server_manager_at_logon: false
+wac_open_initial_configuration_tasks_at_logon: false

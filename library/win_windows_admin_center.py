@@ -36,10 +36,25 @@ description:
 options:
     pop_console_at_sm_launch:
         description:
-            - Indicates to pop-up the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)"
+            - Specifies whether the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" opens when the console starts.
         type: bool
         choices: [ true, false ]
-        default: false
+    open_server_manager_at_logon:
+        description:
+            - Specifies whether the Server Manager application opens automatically at logon.
+            - When C(open_server_manager_at_logon=false) will ensure the Server Manager application does not open when the end user logs on.
+            - When C(open_server_manager_at_logon=true) will ensure the Server Manager application opens when the end user logs on.
+        type: bool
+        choices: [ true, false ]
+    open_initial_configuration_tasks_at_logon:
+        description:
+            - Specifies whether the Initial Configuration Tasks application opens automatically when the end user logs on for the first time.
+            - If it opens automatically, then the Server Manager will not open until the Initial Configuration Tasks application is closed.
+            - When C(open_initial_configuration_tasks_at_logon=false) will ensure the Initial Configuration Tasks application does not open automatically when the end user logs on for the first time.
+            - When C(open_initial_configuration_tasks_at_logon=true) will ensure the Initial Configuration Tasks application opens automatically when the end user logs on for the first time.
+            - Depending the operating system, this setting is deprecated. Use I(open_server_manager_at_logon) instead.
+        type: bool
+        choices: [ true, false ]
 '''
 
 EXAMPLES = r'''
@@ -52,21 +67,48 @@ EXAMPLES = r'''
     - win_windows_admin_center
 
   tasks:
-    - name: Disable the message "Try managing servers with Windows Admin Center"
+    - name: Disable the message "Try managing servers with Windows Admin Center".
       win_windows_admin_center:
         pop_console_at_sm_launch: false
+
+    - name: Specifies that the Server Manager application does not open automatically at logon.
+      win_windows_admin_center:
+        open_server_manager_at_logon: false
+
+    - name: Specifies that the Initial Configuration Tasks application opens automatically when the end user logs on for the first time.
+      win_windows_admin_center:
+        open_initial_configuration_tasks_at_logon: false
 '''
 
 RETURN = r'''
 config:
     description: Detailed information about Windows Admin Center.
-    returned: success
+    returned: always
     type: dict
     contains:
         pop_console_at_sm_launch:
             description:
-                - Indicates if the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" is displayed when starting the Server Manager console
+                - Indicates whether the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" opens the end user opens the console.
             type: bool
-            returned: success
+            returned: always
             sample: true
+        open_server_manager_at_logon:
+            description:
+                - Indicates whether the Server Manager application opens automatically at logon for all users.
+            type: bool
+            returned: always
+            sample: true
+        open_initial_configuration_tasks_at_logon:
+            description:
+                - Indicates whether the Initial Configuration Tasks application opens automatically when the end user logs on for the first time.
+            type: bool
+            returned: always
+            sample: true
+     checked_unattend_launch_setting:
+            description:
+                - Indicates whether Server Manager is disabled for the current user.
+            type: bool
+            returned: always
+            sample: true
+
 '''
