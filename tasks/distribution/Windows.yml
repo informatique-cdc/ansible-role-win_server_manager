@@ -1,0 +1,5 @@
+---
+
+- name: seup Windows Admin Center
+  win_windows_admin_center:
+    pop_console_at_sm_launch: "{{ wac_pop_console_at_sm_launch }}"

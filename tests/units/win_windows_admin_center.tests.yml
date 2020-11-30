@@ -1,0 +1,43 @@
+---
+- name: test the win_windows_admin_center module
+  hosts: all
+  gather_facts: false
+
+  roles:
+    - win_windows_admin_center
+
+  tasks:
+    - name: Disable the message "Try managing servers with Windows Admin Center"
+      win_windows_admin_center:
+        pop_console_at_sm_launch : no
+      register: wac_config
+
+    - name: Test the Windows Admin Center config
+      assert:
+        that:
+          - wac_config.pop_console_at_sm_launch == false
+
+    - name: Enable the message "Try managing servers with Windows Admin Center"
+      win_windows_admin_center:
+        pop_console_at_sm_launch : no
+      register: wac_config
+
+    - name: Test the Windows Admin Center config
+      assert:
+        that:
+          - wac_config.pop_console_at_sm_launch == true
+
+    - name: Disable the message "Try managing servers with Windows Admin Center"
+      include_role:
+        name: win_windows_admin_center
+      vars:
+        wac_pop_console_at_sm_launch : no
+
+    - name: Get the Windows Admin Center configuration
+      win_windows_admin_center:
+      register: wac_config
+
+    - name: Test the Windows Admin Center config
+      assert:
+        that:
+          - wac_config.pop_console_at_sm_launch == false
