@@ -34,7 +34,7 @@ author:
 description:
     - This Ansible module allows to change the Windows Server Manager configuration.
 options:
-    pop_console_at_sm_launch:
+    pop_wac_console_at_sm_launch:
         description:
             - Specifies whether the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" opens when the console starts.
         type: bool
@@ -69,7 +69,7 @@ EXAMPLES = r'''
   tasks:
     - name: Disable the message "Try managing servers with Windows Admin Center".
       win_server_manager:
-        pop_console_at_sm_launch: false
+        pop_wac_console_at_sm_launch: false
 
     - name: Specifies that the Server Manager application does not open automatically at logon.
       win_server_manager:
@@ -86,7 +86,7 @@ config:
     returned: always
     type: dict
     contains:
-        pop_console_at_sm_launch:
+        pop_wac_console_at_sm_launch:
             description:
                 - Indicates whether the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" opens the end user opens the console.
             type: bool

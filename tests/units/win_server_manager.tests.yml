@@ -9,29 +9,29 @@
   tasks:
     - name: Disable the message "Try managing servers with Windows Admin Center"
       win_server_manager:
-        pop_console_at_sm_launch : no
+        pop_wac_console_at_sm_launch : no
       register: wsm_config
 
     - name: Test the Server Manager config
       assert:
         that:
-          - wsm_config.pop_console_at_sm_launch == false
+          - wsm_config.pop_wac_console_at_sm_launch == false
 
     - name: Enable the message "Try managing servers with Windows Admin Center"
       win_server_manager:
-        pop_console_at_sm_launch : no
+        pop_wac_console_at_sm_launch : no
       register: wsm_config
 
     - name: Test the Server Manager config
       assert:
         that:
-          - wsm_config.pop_console_at_sm_launch == true
+          - wsm_config.pop_wac_console_at_sm_launch == true
 
     - name: Disable the message "Try managing servers with Windows Admin Center"
       include_role:
         name: win_server_manager
       vars:
-        wsm_pop_console_at_sm_launch : no
+        wsm_pop_wac_console_at_sm_launch : no
 
     - name: Get the Server Manager configuration
       win_server_manager:
@@ -40,4 +40,4 @@
     - name: Test the Server Manager config
       assert:
         that:
-          - wsm_config.pop_console_at_sm_launch == false
+          - wsm_config.pop_wac_console_at_sm_launch == false

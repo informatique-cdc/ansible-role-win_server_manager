@@ -1,4 +1,4 @@
 ---
-wsm_pop_console_at_sm_launch: false
+wsm_pop_wac_console_at_sm_launch: false
 wsm_open_server_manager_at_logon: false
 wsm_open_initial_configuration_tasks_at_logon: false

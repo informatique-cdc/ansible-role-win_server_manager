@@ -4,7 +4,7 @@
 
 $spec = @{
     options             = @{
-        pop_console_at_sm_launch = @{ type = "bool"; }
+        pop_wac_console_at_sm_launch = @{ type = "bool"; }
         open_server_manager_at_logon = @{ type = "bool"; }
         open_initial_configuration_tasks_at_logon = @{ type = "bool"; }
     }
@@ -13,7 +13,7 @@ $spec = @{
 
 $module = [Ansible.Basic.AnsibleModule]::Create($args, $spec)
 
-$pop_console_at_sm_launch = $module.Params.pop_console_at_sm_launch
+$pop_wac_console_at_sm_launch = $module.Params.pop_wac_console_at_sm_launch
 $open_server_manager_at_logon = $module.Params.open_server_manager_at_logon
 $open_initial_configuration_tasks_at_logon = $module.Params.open_initial_configuration_tasks_at_logon
 $check_mode = $module.CheckMode
@@ -105,7 +105,7 @@ function Get-TargetResource {
     param ()
 
     return @{
-        pop_console_at_sm_launch = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotPopWACConsoleAtSMLaunch' | ConvertTo-Boolean)
+        pop_wac_console_at_sm_launch = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotPopWACConsoleAtSMLaunch' | ConvertTo-Boolean)
         open_server_manager_at_logon = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotOpenServerManagerAtLogon' | ConvertTo-Boolean)
         open_initial_configuration_tasks_at_logon = -not (Get-RegistryPropertyValue -Path $registryKey -Name 'DoNotOpenInitialConfigurationTasksAtLogon' | ConvertTo-Boolean)
         checked_unattend_launch_setting = (Get-RegistryPropertyValue -Path $userRegistryKey -Name 'CheckedUnattendLaunchSetting' | ConvertTo-Boolean)
@@ -146,7 +146,7 @@ function Set-TargetResource {
     (
         [Parameter()]
         [System.Boolean]
-        $pop_console_at_sm_launch,
+        $pop_wac_console_at_sm_launch,
         [Parameter()]
         [System.Boolean]
         $open_server_manager_at_logon,
@@ -158,10 +158,10 @@ function Set-TargetResource {
     $getTargetResourceResult = Get-TargetResource
     $module.Result.changed = $false
 
-    if ($PSBoundParameters.ContainsKey('pop_console_at_sm_launch')) {
-        if ($getTargetResourceResult.pop_console_at_sm_launch -ne $pop_console_at_sm_launch) {
-            Set-ServerManagerBooleanProperty -Name 'DoNotPopWACConsoleAtSMLaunch' -Enabled (-not ($pop_console_at_sm_launch))
-            $diff_after.pop_console_at_sm_launch = $pop_console_at_sm_launch
+    if ($PSBoundParameters.ContainsKey('pop_wac_console_at_sm_launch')) {
+        if ($getTargetResourceResult.pop_wac_console_at_sm_launch -ne $pop_wac_console_at_sm_launch) {
+            Set-ServerManagerBooleanProperty -Name 'DoNotPopWACConsoleAtSMLaunch' -Enabled (-not ($pop_wac_console_at_sm_launch))
+            $diff_after.pop_wac_console_at_sm_launch = $pop_wac_console_at_sm_launch
             $module.Result.changed = $true
         }
     }
@@ -202,8 +202,8 @@ function Set-TargetResource {
 
 $setTargetResourceParameters = @{}
 
-if ($null -ne $pop_console_at_sm_launch) {
-    $setTargetResourceParameters.pop_console_at_sm_launch = $pop_console_at_sm_launch
+if ($null -ne $pop_wac_console_at_sm_launch) {
+    $setTargetResourceParameters.pop_wac_console_at_sm_launch = $pop_wac_console_at_sm_launch
 }
 if ($null -ne $open_server_manager_at_logon ) {
     $setTargetResourceParameters.open_server_manager_at_logon  = $open_server_manager_at_logon

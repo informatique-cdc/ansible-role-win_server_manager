@@ -35,7 +35,7 @@ description:
     - This Ansible role allows to change the Server Manager configuration.
     - This role is a wrapper of the M(win_server_manager) embedded module.
 options:
-    wsm_pop_console_at_sm_launch:
+    wsm_pop_wac_console_at_sm_launch:
         description:
             - Specifies whether the dialog box offering the option ty "Try managing servers with Windows Admin Center (WindowsAdminCenter)" opens when the console starts.
         type: bool
@@ -70,7 +70,7 @@ EXAMPLES = r'''
   roles:
     - role: win_server_manager
       vars:
-        wsm_pop_console_at_sm_launch: no
+        wsm_pop_wac_console_at_sm_launch: no
         wsm_open_server_manager_at_logon: no
         wsm_open_initial_configuration_tasks_at_logon: no
 '''

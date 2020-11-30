@@ -2,6 +2,6 @@
 
 - name: setup Server Manager
   win_server_manager:
-    pop_console_at_sm_launch: "{{ wsm_pop_console_at_sm_launch }}"
+    pop_wac_console_at_sm_launch: "{{ wsm_pop_wac_console_at_sm_launch }}"
     open_server_manager_at_logon: "{{ wsm_open_server_manager_at_logon }}"
     open_initial_configuration_tasks_at_logon: "{{ wsm_open_initial_configuration_tasks_at_logon }}"

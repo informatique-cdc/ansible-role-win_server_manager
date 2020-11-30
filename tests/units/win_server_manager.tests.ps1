@@ -73,23 +73,23 @@ try {
                 $params = @{ }
                 $result = Invoke-AnsibleModule -params $params
                 $result.changed | Should -Be $false
-                $result.Config.pop_console_at_sm_launch | Should -Be $true
+                $result.Config.pop_wac_console_at_sm_launch | Should -Be $true
                 $result.Config.open_server_manager_at_logon  | Should -Be $true
                 $result.Config.open_initial_configuration_tasks_at_logon | Should -Be $true
             }
 
-            It 'Should pop_console_at_sm_launch' {
+            It 'Should pop_wac_console_at_sm_launch' {
 
                 $params = @{
-                    pop_console_at_sm_launch = $false
+                    pop_wac_console_at_sm_launch = $false
                     open_server_manager_at_logon = $false
                     open_initial_configuration_tasks_at_logon = $false
                 }
 
                 $result = Invoke-AnsibleModule -params $params
                 $result.changed | Should -Be $true
-                $result.diff.before.pop_console_at_sm_launch | Should -Be $true
-                $result.diff.after.pop_console_at_sm_launch | Should -Be $false
+                $result.diff.before.pop_wac_console_at_sm_launch | Should -Be $true
+                $result.diff.after.pop_wac_console_at_sm_launch | Should -Be $false
                 $result.diff.after.open_server_manager_at_logon | Should -Be $false
                 $result.diff.after.open_initial_configuration_tasks_at_logon | Should -Be $false
             }
