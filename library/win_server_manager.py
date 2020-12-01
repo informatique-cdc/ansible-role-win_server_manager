@@ -104,11 +104,10 @@ config:
             type: bool
             returned: always
             sample: true
-     checked_unattend_launch_setting:
+        checked_unattend_launch_setting:
             description:
                 - Indicates whether Server Manager is disabled for the current user.
             type: bool
             returned: always
             sample: true
-
 '''
