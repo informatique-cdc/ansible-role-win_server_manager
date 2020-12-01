@@ -214,7 +214,7 @@ if ($null -ne $open_initial_configuration_tasks_at_logon) {
 
 Set-TargetResource @setTargetResourceParameters
 
-$module.result.Config = Get-TargetResource
+$module.result.config = Get-TargetResource
 
 if ($module.Result.changed) {
     $module.Diff.before = $diff_before

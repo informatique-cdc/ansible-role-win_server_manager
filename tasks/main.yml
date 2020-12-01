@@ -1,4 +1,11 @@
 ---
+- name: Collect only facts returned by min
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - min
+
 - name: add OS specific variables
   include_vars: "{{ loop_vars }}"
   with_first_found:

@@ -73,9 +73,9 @@ try {
                 $params = @{ }
                 $result = Invoke-AnsibleModule -params $params
                 $result.changed | Should -Be $false
-                $result.Config.pop_wac_console_at_sm_launch | Should -Be $true
-                $result.Config.open_server_manager_at_logon  | Should -Be $true
-                $result.Config.open_initial_configuration_tasks_at_logon | Should -Be $true
+                $result.config.pop_wac_console_at_sm_launch | Should -Be $true
+                $result.config.open_server_manager_at_logon  | Should -Be $true
+                $result.config.open_initial_configuration_tasks_at_logon | Should -Be $true
             }
 
             It 'Should pop_wac_console_at_sm_launch' {
